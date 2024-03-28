@@ -31,6 +31,9 @@ export async function prepareExistingDirectory(
   ) {
     remove = true
     core.info(`Setting remove=true at ERR-F1751AFB`)
+    core.info(`fsHelper.directoryExistsSync(path.join(repositoryPath, '.git'))=${fsHelper.directoryExistsSync(path.join(repositoryPath, '.git'))}`)
+    core.info(`repositoryUrl=${repositoryUrl}`)
+    core.info(`git.tryGetFetchUrl()=${await git.tryGetFetchUrl()}`)
   } else {
     // Delete any index.lock and shallow.lock left by a previously canceled run or crashed git process
     const lockPaths = [
