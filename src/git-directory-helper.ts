@@ -22,6 +22,7 @@ export async function prepareExistingDirectory(
   // Check whether using git or REST API
   if (!git) {
     remove = true
+    core.info(`Setting remove=true at ERR-1FB4E505`)
   }
   // Fetch URL does not match
   else if (
@@ -29,6 +30,7 @@ export async function prepareExistingDirectory(
     repositoryUrl !== (await git.tryGetFetchUrl())
   ) {
     remove = true
+    core.info(`Setting remove=true at ERR-F1751AFB`)
   } else {
     // Delete any index.lock and shallow.lock left by a previously canceled run or crashed git process
     const lockPaths = [
@@ -85,6 +87,7 @@ export async function prepareExistingDirectory(
       if (!(await git.submoduleStatus())) {
         remove = true
         core.info('Bad Submodules found, removing existing files')
+        core.info(`Setting remove=true at ERR-05AD42CB`)
       }
 
       // Clean
@@ -95,8 +98,10 @@ export async function prepareExistingDirectory(
             `The clean command failed. This might be caused by: 1) path too long, 2) permission issue, or 3) file in use. For further investigation, manually run 'git clean -ffdx' on the directory '${repositoryPath}'.`
           )
           remove = true
+          core.info(`Setting remove=true at ERR-AA48BEEB`)
         } else if (!(await git.tryReset())) {
           remove = true
+          core.info(`Setting remove=true at ERR-A583F43C`)
         }
         core.endGroup()
 
@@ -111,6 +116,7 @@ export async function prepareExistingDirectory(
         `Unable to prepare the existing repository. The repository will be recreated instead.`
       )
       remove = true
+      core.info(`Setting remove=true at ERR-E17B3110`)
     }
   }
 
