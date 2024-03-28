@@ -1023,11 +1023,13 @@ function prepareExistingDirectory(git, repositoryPath, repositoryUrl, clean, ref
         // Check whether using git or REST API
         if (!git) {
             remove = true;
+            core.info(`Setting remove=true at ERR-1FB4E505`);
         }
         // Fetch URL does not match
         else if (!fsHelper.directoryExistsSync(path.join(repositoryPath, '.git')) ||
             repositoryUrl !== (yield git.tryGetFetchUrl())) {
             remove = true;
+            core.info(`Setting remove=true at ERR-F1751AFB`);
         }
         else {
             // Delete any index.lock and shallow.lock left by a previously canceled run or crashed git process
@@ -1078,6 +1080,7 @@ function prepareExistingDirectory(git, repositoryPath, repositoryUrl, clean, ref
                 if (!(yield git.submoduleStatus())) {
                     remove = true;
                     core.info('Bad Submodules found, removing existing files');
+                    core.info(`Setting remove=true at ERR-05AD42CB`);
                 }
                 // Clean
                 if (clean) {
@@ -1085,9 +1088,11 @@ function prepareExistingDirectory(git, repositoryPath, repositoryUrl, clean, ref
                     if (!(yield git.tryClean())) {
                         core.debug(`The clean command failed. This might be caused by: 1) path too long, 2) permission issue, or 3) file in use. For further investigation, manually run 'git clean -ffdx' on the directory '${repositoryPath}'.`);
                         remove = true;
+                        core.info(`Setting remove=true at ERR-AA48BEEB`);
                     }
                     else if (!(yield git.tryReset())) {
                         remove = true;
+                        core.info(`Setting remove=true at ERR-A583F43C`);
                     }
                     core.endGroup();
                     if (remove) {
@@ -1098,12 +1103,13 @@ function prepareExistingDirectory(git, repositoryPath, repositoryUrl, clean, ref
             catch (error) {
                 core.warning(`Unable to prepare the existing repository. The repository will be recreated instead.`);
                 remove = true;
+                core.info(`Setting remove=true at ERR-E17B3110`);
             }
         }
         if (remove) {
             // Delete the contents of the directory. Don't delete the directory itself
             // since it might be the current working directory.
-            core.info(`Deleting the contents of '${repositoryPath}'`);
+            core.info(`Deleting the contents of '${repositoryPath}' JDON`);
             for (const file of yield fs.promises.readdir(repositoryPath)) {
                 yield io.rmRF(path.join(repositoryPath, file));
             }
